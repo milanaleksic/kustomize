@@ -23,7 +23,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"syscall"
 
 	"sigs.k8s.io/kustomize/pkg/ifc"
 	"sigs.k8s.io/kustomize/pkg/resid"
@@ -104,24 +103,24 @@ func (p *ExecPlugin) processOptionalArgsFields() error {
 }
 
 func (p *ExecPlugin) writeConfig() (string, error) {
-	tmpFile, err := ioutil.TempFile("", "kust-pipe")
+	f, err := ioutil.TempFile("", "kust-pipe")
 	if err != nil {
 		return "", err
 	}
-	syscall.Mkfifo(tmpFile.Name(), 0600)
-	stdout, err := os.OpenFile(tmpFile.Name(), os.O_RDWR, 0600)
+	//syscall.Mkfifo(tmpFile.Name(), 0600)
+	//stdout, err := os.OpenFile(tmpFile.Name(), os.O_RDWR, 0600)
+	//if err != nil {
+	//	return "", err
+	//}
+	_, err = f.Write(p.cfg)
 	if err != nil {
 		return "", err
 	}
-	_, err = stdout.Write(p.cfg)
+	err = f.Close()
 	if err != nil {
 		return "", err
 	}
-	err = stdout.Close()
-	if err != nil {
-		return "", err
-	}
-	return tmpFile.Name(), nil
+	return f.Name(), nil
 }
 
 func (p *ExecPlugin) Generate() (resmap.ResMap, error) {
