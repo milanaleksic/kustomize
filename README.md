@@ -1,5 +1,18 @@
 # kustomize
 
+# Patch notice by milanaleksic
+
+Official upstream release v2.1.0 used a Linux syscall which blocked it from compiling for Windows. 
+The code was patched so that that syscall was removed.
+
+```
+aleksic@laptop ~/kustomize/cmd/kustomize → go version
+go version go1.13.1 linux/amd64
+aleksic@laptop ~/kustomize/cmd/kustomize → GOOS=windows go build .
+```
+
+# Rest of official kustomize README
+
 `kustomize` lets you customize raw, template-free YAML
 files for multiple purposes, leaving the original YAML
 untouched and usable as is.
